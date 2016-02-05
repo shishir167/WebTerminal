@@ -30,7 +30,7 @@
       });
       socket.on('chat message', function(msg){
         console.log(msg.message);
-        $('#messages').append($('<li>').text(msg.message));
+        $('#messages').append($('<br><pre>').text(msg.message));
       });
     </script>
   </body>
