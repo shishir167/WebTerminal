@@ -10,16 +10,16 @@ var exec = require('child_process').exec;
 
 io.on('connection', function(socket){
 	socket.on('chat message', function(msg){
-		io.emit('chat message', {'message': msg});
+		io.emit('chat message', {'message': 'WebTerminal>' + msg});
 		console.log('message: ' + msg);
 		var child = exec(msg, function (error, stdout, stderr) {
+			if(stderr!==''){
+	            console.log('stderr:\n' + stderr);
+	            io.emit('chat message', {'message': stderr});
+	        }
 	        if(stdout!==''){
 	            console.log('stdout\n' + stdout);
 	            io.emit('chat message', {'message': stdout});
-	        }
-	        if(stderr!==''){
-	            console.log('stderr:\n' + stderr);
-	            io.emit('chat message', {'message': stderr});
 	        }
 	        if (error !== null) {
 	            console.log('exec error:\n[' + error+']');
